@@ -69,9 +69,9 @@ char	*readfile(int fd, char *buff)
 	while (octreaded != 0, ft_strchr(readed, '\n') == 0)
 	{
 		octreaded = read(fd, readed, BUFFER_SIZE);
-		
-		
+		buff = ft_strjoin(buff, readed);
 	}
+	return (buff);
 	
 }
 
@@ -81,7 +81,7 @@ char *get_next_line(int fd)
 
 	buff = NULL;
 	buff = readfile(fd, buff);
-	readfile(fd);
+	readfile(fd, buff);
 	return (buff);
 }
 
