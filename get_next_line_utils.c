@@ -31,7 +31,7 @@ char	*ft_strchr(const char *str, int c)
 }
 
 
-static size_t	ft_strlen(const char *a)
+size_t	ft_strlen(const char *a)
 {
 	int	i;
 
@@ -91,6 +91,47 @@ static size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 	dest[i] = '\0';
 	return (ft_strlen(s));
 }
+char	*ft_strdup(const char *s)
+{
+	char	*str;
+	char	*newstr;
+	size_t	i;
+
+	if (s == NULL)
+		return (NULL);
+	str = (char *)s;
+	newstr = malloc(sizeof(char) * ft_strlen(str) + 1);
+	if (newstr == NULL)
+		return (NULL);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		newstr[i] = str[i];
+		i++;
+	}
+	newstr[i] = '\0';
+	return (newstr);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*newstr;
+	size_t	s_len;
+
+	if (!s)
+		return (NULL);
+	s_len = ft_strlen(s);
+	if (start >= s_len)
+		return (ft_strdup(""));
+	if (len > s_len - start)
+		len = s_len - start;
+	newstr = malloc(len * sizeof(char) + 1);
+	if (newstr == NULL)
+		return (NULL);
+	ft_strlcpy(newstr, s + start, len + 1);
+	newstr[len] = '\0';
+	return (newstr);
+}
 
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -102,24 +143,25 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int j;
 
 	j = 0;
-	if (!s1 || !s2)
-		return (NULL);
+	if (!s1) 
+		return (ft_strdup(s2));
 	lens1 = ft_strlen(s1);
 	lens2 = ft_strlen(s2);
 	newstr = (char *)malloc(sizeof(char) * (lens1 + lens2) + 1);
 	if (newstr == NULL)
 		return (NULL);
-	while (s1[i] != '\0')
+	i = 0;
+	while (i < lens1)
 		{
 			newstr[i] = s1[i];
 			i++;
 		}
-	while (s2[i] != '\0')
+	while (j < lens2)
 	{
 		newstr[i + j] = s2[j];
 		j++;
 	}
 	newstr[j + i] = '\0';
-	free(s1);
+	// free(s1);
 	return (newstr);
 }

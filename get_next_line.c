@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include "get_next_line.h"
 
 // char	*readfile(int fd)
@@ -63,31 +64,45 @@
 
 char	*readfile(int fd, char *buff)
 {
-	int octreaded;
+	ssize_t octreaded;
 	char *readed;
+	char *line;
 
-	while (octreaded != 0, ft_strchr(readed, '\n') == 0)
+	//buff = ft_strdup("");  
+	readed = malloc(BUFFER_SIZE + 1);
+	octreaded = read(fd, readed, BUFFER_SIZE);
+	readed[BUFFER_SIZE] = '\0';
+	buff = ft_strjoin(buff, readed);
+	while (octreaded != 0)
 	{
+		if (ft_strchr(buff, '\n') != 0)
+			break;
 		octreaded = read(fd, readed, BUFFER_SIZE);
+		readed[BUFFER_SIZE] = '\0';
 		buff = ft_strjoin(buff, readed);
+		// printf("%s\n", buff);
 	}
+	printf("%s\n", buff);
 	return (buff);
 	
+	// printf("%d\n", ft_strlen(buff));
 }
 
 char *get_next_line(int fd)
 {
 	static char *buff;
 
-	buff = NULL;
+	// buff = NULL;
+	printf("i am here\n");
 	buff = readfile(fd, buff);
-	readfile(fd, buff);
+	// readfile(fd, buff);
 	return (buff);
 }
 
 int main()
 {
 	int fd = open("file.txt", O_RDWR);
+	// printf("i am here");
 	char *str = get_next_line(fd);
 	printf("%s\n", str);
 }
