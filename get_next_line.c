@@ -61,6 +61,37 @@
 // 	}
 // 	return (buff);	
 // 	}	
+char *newPointer(char *buff)
+{
+	int i;
+
+	i = 0;
+	while(buff[i] != '\n' && buff[i] != '\0')
+		i++;
+	// if (buff + i + 1  == NULL)
+	// 	return (NULL);
+	// printf("ayoub's test : %s\n", buff);
+	buff = ft_strdup(buff + i + 1);
+	return (buff);
+}
+
+char *get_line(char *buff)
+{
+	char *line;
+	int i;
+
+	i = 0;
+	line = malloc(ft_strlen(buff) + 2);
+	while (buff[i] != '\n' && buff[i] != '\0')
+	{
+		line[i] = buff[i];
+		i++;
+	}
+	line[i] = '\n';
+	line[i + 1] = '\0';
+		// printf("i am here\n");
+	return (line);
+}
 
 char	*readfile(int fd, char *buff)
 {
@@ -82,7 +113,6 @@ char	*readfile(int fd, char *buff)
 		buff = ft_strjoin(buff, readed);
 		// printf("%s\n", buff);
 	}
-	printf("%s\n", buff);
 	return (buff);
 	
 	// printf("%d\n", ft_strlen(buff));
@@ -91,12 +121,16 @@ char	*readfile(int fd, char *buff)
 char *get_next_line(int fd)
 {
 	static char *buff;
+	char *line;
 
 	// buff = NULL;
-	printf("i am here\n");
 	buff = readfile(fd, buff);
+	line = get_line(buff);
+	// printf("%s\n",line);
+	buff = newPointer(buff);
+
 	// readfile(fd, buff);
-	return (buff);
+	return (line);
 }
 
 int main()
@@ -104,5 +138,8 @@ int main()
 	int fd = open("file.txt", O_RDWR);
 	// printf("i am here");
 	char *str = get_next_line(fd);
-	printf("%s\n", str);
+	char *str1 = get_next_line(fd);
+	char *str2 = get_next_line(fd);
+	// printf("str : %s\n", str);
+	printf("str 1: %s\n", str2);
 }
