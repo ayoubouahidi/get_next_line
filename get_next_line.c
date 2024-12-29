@@ -113,9 +113,11 @@ char	*readfile(int fd, char *buff)
 		octreaded = read(fd, readed, BUFFER_SIZE);
 		readed[BUFFER_SIZE] = '\0';
 		buff = ft_strjoin(buff, readed);
+		// free(readed);
 		// printf("%s\n", buff);
 	}
 	return (buff);
+	free(readed);
 	
 	// printf("%d\n", ft_strlen(buff));
 }
@@ -139,13 +141,13 @@ char *get_next_line(int fd)
 	return (line);
 }
 
-// int main()
-// {
-// 	int fd = open("file.txt", O_RDWR);
-// 	// printf("i am here");
-// 	char *str = get_next_line(fd);
-// 	char *str1 = get_next_line(fd);
-// 	char *str2 = get_next_line(fd);
-// 	// printf("str : %s\n", str);
-// 	printf("str : %s\n", str2);
-// }
+int main()
+{
+	int fd = open("file.txt", O_RDWR);
+	// printf("i am here");
+	char *str = get_next_line(fd);
+	char *str1 = get_next_line(fd);
+	char *str2 = get_next_line(fd);
+	// printf("str : %s\n", str);
+	printf("str : %s\n", str2);
+}

@@ -162,6 +162,5 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	newstr[j + i] = '\0';
-	// free(s1);
 	return (newstr);
 }
