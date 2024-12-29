@@ -82,6 +82,8 @@ char *get_line(char *buff)
 
 	i = 0;
 	line = malloc(ft_strlen(buff) + 2);
+	if(buff[i] == '\0')
+		return (NULL);
 	while (buff[i] != '\n' && buff[i] != '\0')
 	{
 		line[i] = buff[i];
@@ -127,19 +129,23 @@ char *get_next_line(int fd)
 	buff = readfile(fd, buff);
 	line = get_line(buff);
 	// printf("%s\n",line);
+	if (line == NULL)
+		return (NULL);
 	buff = newPointer(buff);
+	// if (buff == NULL)
+	// 	return (NULL);
 
 	// readfile(fd, buff);
 	return (line);
 }
 
-int main()
-{
-	int fd = open("file.txt", O_RDWR);
-	// printf("i am here");
-	char *str = get_next_line(fd);
-	char *str1 = get_next_line(fd);
-	char *str2 = get_next_line(fd);
-	// printf("str : %s\n", str);
-	printf("str 1: %s\n", str2);
-}
+// int main()
+// {
+// 	int fd = open("file.txt", O_RDWR);
+// 	// printf("i am here");
+// 	char *str = get_next_line(fd);
+// 	char *str1 = get_next_line(fd);
+// 	char *str2 = get_next_line(fd);
+// 	// printf("str : %s\n", str);
+// 	printf("str : %s\n", str2);
+// }
