@@ -61,6 +61,21 @@
 // 	}
 // 	return (buff);	
 // 	}	
+
+
+
+// a continuer ...
+char *joinfree(char *buff,char *readed)
+{
+	char *tmp;
+
+	tmp =  ft_strjoin(buff, readed);
+	free(buff);
+	return (tmp);
+}
+
+
+
 char *newPointer(char *buff)
 {
 	int i;
@@ -82,6 +97,8 @@ char *get_line(char *buff)
 
 	i = 0;
 	line = malloc(ft_strlen(buff) + 2);
+	if (!line)
+		return (NULL);
 	if(buff[i] == '\0')
 		return (NULL);
 	while (buff[i] != '\n' && buff[i] != '\0')
@@ -103,21 +120,30 @@ char	*readfile(int fd, char *buff)
 
 	//buff = ft_strdup("");  
 	readed = malloc(BUFFER_SIZE + 1);
+	if (!readed)
+        return NULL;
 	octreaded = read(fd, readed, BUFFER_SIZE);
+	// if (octreaded < 0)
+	// {
+	// 	free(readed);
+	// 	return (NULL);
+	// }
 	readed[BUFFER_SIZE] = '\0';
-	buff = ft_strjoin(buff, readed);
+	// buff = ft_strjoin(buff, readed);
+	buff = joinfree(buff, readed);
 	while (octreaded != 0)
 	{
 		if (ft_strchr(buff, '\n') != 0)
 			break;
 		octreaded = read(fd, readed, BUFFER_SIZE);
 		readed[BUFFER_SIZE] = '\0';
-		buff = ft_strjoin(buff, readed);
+		// buff = ft_strjoin(buff, readed);
+		buff = joinfree(buff, readed);
 		// free(readed);
 		// printf("%s\n", buff);
 	}
+	// free(readed);
 	return (buff);
-	free(readed);
 	
 	// printf("%d\n", ft_strlen(buff));
 }
@@ -131,7 +157,7 @@ char *get_next_line(int fd)
 	buff = readfile(fd, buff);
 	line = get_line(buff);
 	// printf("%s\n",line);
-	if (line == NULL)
+	if (line == NULL )
 		return (NULL);
 	buff = newPointer(buff);
 	// if (buff == NULL)
@@ -143,11 +169,16 @@ char *get_next_line(int fd)
 
 int main()
 {
-	int fd = open("file.txt", O_RDWR);
-	// printf("i am here");
-	char *str = get_next_line(fd);
-	char *str1 = get_next_line(fd);
-	char *str2 = get_next_line(fd);
+	int fd = open("file.txt", O_RDONLY);
+	if (fd < 0)
+	{
+		printf("file des problem ...");
+	}else{
+		char *str = get_next_line(fd);
+		char *str1 = get_next_line(fd);
+		char *str2 = get_next_line(fd);
 	// printf("str : %s\n", str);
-	printf("str : %s\n", str2);
+		printf("str : %s\n", str);
+	}
+	// printf("i am here");
 }
