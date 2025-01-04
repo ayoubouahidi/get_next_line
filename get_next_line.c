@@ -15,60 +15,11 @@
 #include <stdlib.h>
 #include "get_next_line.h"
 
-// char	*readfile(int fd)
-// {
-// 	int octreaded;
-// 	char *readed;
-// 	int i;
-// 	char *buff;
-
-// 	buff[0] = "";
-// 	i = 0;
-// 	// readed = malloc(42);
-// 	// while (1)
-// 	// {
-// 	// 	octreaded = read(fd, readed, BUFFER_SIZE);
-// 	// 	if (octreaded <= 0)
-// 	// 		break;
-// 	// 	if(readed[i] == '\n' || readed[i] == '\0')
-// 	// 		readed[i] = '\0';
-// 	// 	i++;
-// 	// }
-// 	// buff = ft_strjoin(buff, readed);
-// 	while ()
-// 	{
-// 		// octreaded = read(fd, readed, BUFFER_SIZE);
-// 		// printf("%d\n", octreaded);
-// // 
-//         // readed[octreaded] = '\0';  // Null-terminate the read data
-// 		// printf("%c\n", readed[octreaded	- 1]);
-//         // if (octreaded <= 0) {
-//             // break;
-//         // }
-// // 
-//         // while (i < octreaded && readed[i] != '\n' )
-// 		// {
-// 				// buff[i] = readed[i];
-// 		        // i++;
-//         // }
-//     	// Check for newline or end of string
-//         // if (readed[i] == '\n' || readed[i] == '\0') 
-// 		// {
-// 			// printf("i found a new line\n"); 
-//         	// break;
-//         // }
-// 		// 
-// 	}
-// 	return (buff);	
-// 	}	
-
-
-
-// a continuer ...
 char *joinfree(char *buff,char *readed)
 {
 	char *tmp;
-
+	if (!buff)
+        buff = ft_strdup("");
 	tmp =  ft_strjoin(buff, readed);
 	free(buff);
 	return (tmp);
@@ -79,73 +30,79 @@ char *joinfree(char *buff,char *readed)
 char *newPointer(char *buff)
 {
 	int i;
+	char *newbuff;
 
 	i = 0;
+	if (!buff)
+        return NULL;
 	while(buff[i] != '\n' && buff[i] != '\0')
 		i++;
-	// if (buff + i + 1  == NULL)
-	// 	return (NULL);
-	// printf("ayoub's test : %s\n", buff);
-	buff = ft_strdup(buff + i + 1);
-	return (buff);
+	if (buff[i] == '\0')
+    {
+        free(buff);
+        return NULL;
+    }
+	newbuff = ft_strdup(buff + i + 1);
+	free(buff);
+	return (newbuff);
 }
+
 
 char *get_line(char *buff)
 {
 	char *line;
 	int i;
+	int j;
 
 	i = 0;
-	line = malloc(ft_strlen(buff) + 2);
+	if (buff[i] == '\0')
+	 return NULL; 
+  	while (buff[i] != '\n' && buff[i] != '\0')
+        i++;
+	line = malloc(i + 2);
 	if (!line)
 		return (NULL);
-	if(buff[i] == '\0')
-		return (NULL);
-	while (buff[i] != '\n' && buff[i] != '\0')
+	j = 0;
+	while (buff[j] != '\n' && buff[j] != '\0')
 	{
-		line[i] = buff[i];
-		i++;
+		line[j] = buff[j];
+		j++;
 	}
-	line[i] = '\n';
-	line[i + 1] = '\0';
-		// printf("i am here\n");
+	if (buff[j] == '\n') {
+		line[j] = '\n';
+        j++;
+    }
+	line[j] = '\0';
 	return (line);
 }
-
 char	*readfile(int fd, char *buff)
 {
 	ssize_t octreaded;
 	char *readed;
-	char *line;
 
-	//buff = ft_strdup("");  
 	readed = malloc(BUFFER_SIZE + 1);
 	if (!readed)
-        return NULL;
-	octreaded = read(fd, readed, BUFFER_SIZE);
-	// if (octreaded < 0)
-	// {
-	// 	free(readed);
-	// 	return (NULL);
-	// }
-	readed[BUFFER_SIZE] = '\0';
-	// buff = ft_strjoin(buff, readed);
-	buff = joinfree(buff, readed);
-	while (octreaded != 0)
+		return (NULL);
+	while ((octreaded = read(fd, readed, BUFFER_SIZE)) > 0)
 	{
-		if (ft_strchr(buff, '\n') != 0)
-			break;
-		octreaded = read(fd, readed, BUFFER_SIZE);
-		readed[BUFFER_SIZE] = '\0';
-		// buff = ft_strjoin(buff, readed);
+		readed[octreaded] = '\0';
 		buff = joinfree(buff, readed);
-		// free(readed);
-		// printf("%s\n", buff);
+		if (ft_strchr(buff, '\n'))
+			break;
 	}
-	// free(readed);
-	return (buff);
-	
-	// printf("%d\n", ft_strlen(buff));
+	if (octreaded == -1)
+    {
+        free(buff);
+		free(readed);
+        return NULL;
+    }
+	if (octreaded == 0 )
+	{
+		free(readed);
+        return buff;
+	}
+	free(readed); 
+	return (buff); 
 }
 
 char *get_next_line(int fd)
@@ -153,32 +110,51 @@ char *get_next_line(int fd)
 	static char *buff;
 	char *line;
 
-	// buff = NULL;
-	buff = readfile(fd, buff);
-	line = get_line(buff);
-	// printf("%s\n",line);
-	if (line == NULL )
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	buff = readfile(fd, buff);
+	if (buff == NULL)
+	{
+		free(buff);
+		return (NULL);
+	}
+	line = get_line(buff);
 	buff = newPointer(buff);
-	// if (buff == NULL)
-	// 	return (NULL);
-
-	// readfile(fd, buff);
 	return (line);
 }
 
-int main()
-{
-	int fd = open("file.txt", O_RDONLY);
-	if (fd < 0)
-	{
-		printf("file des problem ...");
-	}else{
-		char *str = get_next_line(fd);
-		char *str1 = get_next_line(fd);
-		char *str2 = get_next_line(fd);
-	// printf("str : %s\n", str);
-		printf("str : %s\n", str);
-	}
-	// printf("i am here");
-}
+// int main()
+// {
+// 	int fd = open("file.txt", O_RDONLY);
+// 	if (fd < 0)
+// 	{
+// 		printf("file des problem ...");
+// 	}else{
+// 		char *str = get_next_line(fd);
+// 		char *str1 = get_next_line(fd);
+// 		char *str2 = get_next_line(fd);
+// 	// printf("str : %s\n", str);
+// 		printf("str : %s\n", str2);
+// 	}
+// 	// printf("i am here");
+// }
+
+
+
+// int main()
+// {
+// 	int fd = open("test.txt", O_RDONLY);
+// 	char *str;
+// 	int i = 0;
+
+// 	while (i < 5)
+// 	{
+// 		str = get_next_line(fd);
+// 		if (str)
+// 		{
+// 			printf ("%s", str);
+// 			free(str);
+// 		}
+// 		i++;
+// 	}
+// }
