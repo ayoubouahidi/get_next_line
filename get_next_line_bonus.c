@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayouahid <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/28 00:20:42 by ayouahid          #+#    #+#             */
-/*   Updated: 2024/12/28 00:20:44 by ayouahid         ###   ########.fr       */
+/*   Created: 2025/01/04 23:42:48 by ayouahid          #+#    #+#             */
+/*   Updated: 2025/01/04 23:42:51 by ayouahid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -25,8 +26,6 @@ char *joinfree(char *buff,char *readed)
 	free(buff);
 	return (tmp);
 }
-
-
 
 char *newPointer(char *buff)
 {
@@ -47,7 +46,6 @@ char *newPointer(char *buff)
 	free(buff);
 	return (newbuff);
 }
-
 
 char *get_line(char *buff)
 {
@@ -76,6 +74,7 @@ char *get_line(char *buff)
 	line[j] = '\0';
 	return (line);
 }
+
 char	*readfile(int fd, char *buff)
 {
 	ssize_t octreaded;
@@ -104,54 +103,18 @@ char	*readfile(int fd, char *buff)
 
 char *get_next_line(int fd)
 {
-	static char *buff;
+	static char *buff[1024];
 	char *line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 1024)
 		return (NULL);
-	buff = readfile(fd, buff);
-	if (buff == NULL)
+	buff[fd] = readfile(fd, buff[fd]);
+	if (buff[fd] == NULL)
 	{
-		free(buff);
+		free(buff[fd]);
 		return (NULL);
 	}
-	line = get_line(buff);
-	buff = newPointer(buff);
+	line = get_line(buff[fd]);
+	buff[fd] = newPointer(buff[fd]);
 	return (line);
 }
-
-// int main()
-// {
-// 	int fd = open("file.txt", O_RDONLY);
-// 	if (fd < 0)
-// 	{
-// 		printf("file des problem ...");
-// 	}else{
-// 		char *str = get_next_line(fd);
-// 		char *str1 = get_next_line(fd);
-// 		char *str2 = get_next_line(fd);
-// 	// printf("str : %s\n", str);
-// 		printf("str : %s\n", str2);
-// 	}
-// 	// printf("i am here");
-// }
-
-
-
-// int main()
-// {
-// 	int fd = open("test.txt", O_RDONLY);
-// 	char *str;
-// 	int i = 0;
-
-// 	while (i < 5)
-// 	{
-// 		str = get_next_line(fd);
-// 		if (str)
-// 		{
-// 			printf ("%s", str);
-// 			free(str);
-// 		}
-// 		i++;
-// 	}
-// }

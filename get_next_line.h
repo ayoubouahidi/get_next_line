@@ -18,5 +18,6 @@ size_t	ft_strlen(const char *a);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 // char *get_next_line(int fd);
 char *get_next_line(int fd);
+char *freenull(char *buff, char *readed);
 
 # endif
